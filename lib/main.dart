@@ -1,8 +1,8 @@
 // import 'dart:html';
 
 import 'package:flutter/material.dart';
-import './question.dart';
-import './options.dart';
+import './quiz.dart';
+import './result.dart';
 
 class MyApp extends StatefulWidget {
     @override
@@ -13,50 +13,60 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State <MyApp> {
-    final questions = const [
+    final _questions = const [
         {
             'questionText': 'What\'s your favorite anime ?', 
             'options': [
-                'Bleach', 
-                'Naruto', 
-                'One Punch Man', 
-                'Attack on Titan'
-            ]
+                {'Text': 'Bleach', 'Score': 4},
+                {'Text': 'Naruto', 'Score': 2},
+                {'Text': 'One Punch Man', 'Score': 3}, 
+                {'Text': 'Attack on Titan', 'Score': 1}
+              ]
         },
         {
             'questionText': 'What\'s your favorite charachter ?', 
             'options': [
-                'Naruto', 
-                'Ichigo', 
-                'Saitama', 
-                'Eren yeager'
+                {'Text': 'Naruto', 'Score': 4}, 
+                {'Text': 'Ichigo', 'Score': 1},
+                {'Text': 'Saitama', 'Score': 2},
+                {'Text': 'Eren yeager', 'Score': 3}
             ]
         },
         {
             'questionText': 'Which genre below you watch the most ?', 
             'options': [
-                'Shonen', 
-                'Isekai', 
-                'Action', 
-                'Comedy'
+                {'Text': 'Shonen', 'Score': 3},
+                {'Text': 'Isekai', 'Score': 4},
+                {'Text': 'Action', 'Score': 1}, 
+                {'Text': 'Comedy', 'Score': 2},
             ]
         },
         {
             'questionText': 'Do you follow any weeb accounts on social media ?', 
             'options': [
-                'Yes', 
-                'No'
+                {'Text': 'Yes', 'Score': 4}, 
+                {'Text': 'No', 'Score': 1}
             ]
         },
     ];
 	var _questionIndex = 0;
+  var _totalScore = 0;
 
-	void _answerQuestion(){
+  void _resetQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
+
+	void _answerQuestion(int score){
+
+        _totalScore += score;
         setState(() {
 		    _questionIndex = _questionIndex + 1;
         });
 		print(_questionIndex);
-        if(_questionIndex < questions.length) {
+        if(_questionIndex < _questions.length) {
             print("Good job!! Now to the next question");
             return;
         }
@@ -67,24 +77,18 @@ class _MyAppState extends State <MyApp> {
 
 	@override
 	Widget build(BuildContext context) {
-		
 		return MaterialApp(
 			home: Scaffold(
-				appBar: AppBar(
+				  appBar: AppBar(
 					title: Text("Quiz App")
 				),
-				body: _questionIndex < questions.length ? Column(
-          			children: [
-						  	Question(
-                                  questions[_questionIndex]['questionText']
-                                ),
-                            ...(questions[_questionIndex]['options'] as List<String>).map((option) {
-                                return Option(_answerQuestion, option);
-                            }).toList()
-					  	],
-        		) : Center(
-                    child: Text("Yes!!, You are now an official weeb"), 
-                ),
+			body: _questionIndex < _questions.length ? 
+        Quiz(
+          answerQuestion: _answerQuestion, 
+          questions: _questions, 
+          questionIndex: _questionIndex
+        )
+        : Result(_totalScore, _resetQuiz),
 			),
 		);
 	}

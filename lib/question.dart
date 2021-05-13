@@ -10,7 +10,8 @@ class Question extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 400,
-      color: Colors.pink[300],
+      color: Colors.blue[300],
+      padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(20),
       child: Text(
         questionText,
